@@ -3,7 +3,7 @@ from .utilities.numpy_wrapper import sign, tanh
 from .world import World
 from .individual import Individual
 from random import choice, randrange, random, uniform
-from .enums import InputTypes, MoveDirections, OutputTypes
+from .types import InputTypes, MoveDirections, OutputTypes
 
 
 class SimController:
@@ -15,6 +15,7 @@ class SimController:
         self.genome_length = genome_length
         self.internal_neuron_count = internal_neuron_count
         self.individuals = self._create_individuals(population)
+        self.pause = False
 
     def setup_simulation(self):
         """ Set up first simulation generation """
@@ -44,6 +45,9 @@ class SimController:
     def analyze_generation(self) -> dict[str, Any]:
         """ Returns more in depth data on a generation """
         pass
+
+    def pause_resume_simulation(self) -> None:
+        self.pause = not self.pause
     
     def _perform_actions(self, individual: Individual, actions_dict: dict[OutputTypes, float]) -> None:
         """ Private method that calculates the probability of each action and performs it """    

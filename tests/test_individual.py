@@ -1,5 +1,5 @@
 from sim.individual import Individual
-from sim.enums import InputTypes, OutputTypes
+from sim.types import InputTypes, OutputTypes
 import pytest
 
 

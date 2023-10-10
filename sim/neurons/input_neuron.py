@@ -1,4 +1,4 @@
-from sim.enums import InputTypes
+from sim.types import InputTypes
 from .neuron import Neuron
 
 

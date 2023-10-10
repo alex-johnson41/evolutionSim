@@ -5,7 +5,7 @@ from .genetics.synapse import Synapse
 from .neurons.input_neuron import InputNeuron
 from .neurons.output_neuron import OutputNeuron
 from .neurons.internal_neuron import InternalNeuron
-from .enums import InputTypes, OutputTypes, MoveDirections
+from .types import InputTypes, OutputTypes, MoveDirections
 
 
 class Individual:

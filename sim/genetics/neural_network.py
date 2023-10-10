@@ -1,4 +1,4 @@
-from ..enums import OutputTypes
+from ..types import OutputTypes
 from .synapse import Synapse
 from ..neurons.output_neuron import OutputNeuron
 

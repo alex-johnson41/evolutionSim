@@ -1,7 +1,7 @@
 from sim.utilities.numpy_wrapper import tanh
 from .neuron import Neuron
 from random import uniform
-from sim.enums import OutputTypes
+from sim.types import OutputTypes
 
 
 class OutputNeuron(Neuron):
