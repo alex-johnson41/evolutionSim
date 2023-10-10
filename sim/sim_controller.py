@@ -25,33 +25,26 @@ class SimController:
         """ Set up first simulation generation """
         for indiv in self.individuals:
             x_coord, y_coord = self._add_indiv_to_world(indiv)
-            data_dict = self._get_input_data(indiv, x_coord, y_coord)
+            data_dict = self._get_input_data(indiv, 0, x_coord, y_coord)
             indiv.spawn(data_dict, self._create_random_genome())
 
     def run_simulation(self, generations: int) -> list[dict[str, int]]:
         """" Runs the simulation for x generations and returns basic data about each generation """
         for i in range(generations):
             self.run_generation()
-            self.individuals = self._find_survivors()
-            new_indivs = self._new_indivs()
-            self.individuals += new_indivs
-            self.world.clear_map()
-            for indiv in self.individuals:
-                x_coord, y_coord = self._add_indiv_to_world(indiv)
-                data_dict = self._get_input_data(indiv, x_coord, y_coord)
-                indiv._set_input_data(data_dict)
+            self._setup_next_generation()
 
     def run_generation(self) -> dict[str, int]:
         """ Simulates all steps of a single generation and returns a dictionary of basic data about the generation """
         for i in range(self.generation_steps):
-            self.step()
+            self.step(i)
 
-    def step(self):
+    def step(self, generation_step: int):
         """ Generate tne step for all individuals """
         for individual in self.individuals:
             actions_dict = individual.step()
             new_x_int, new_y_int = self._perform_actions(individual, actions_dict)
-            self._update_input_data(individual, new_x_int, new_y_int)
+            self._update_input_data(individual, generation_step, new_x_int, new_y_int)
 
     def analyze_generation(self) -> dict[str, Any]:
         """ Returns more in depth data on a generation """
@@ -61,6 +54,16 @@ class SimController:
         """ Modifies flag to pause the simulation """
         self.pause = not self.pause
     
+    def _setup_next_generation(self) -> None:
+        self.individuals = self._find_survivors()
+        new_indivs = self._new_indivs()
+        self.individuals += new_indivs
+        self.world.clear_map()
+        for indiv in self.individuals:
+            x_coord, y_coord = self._add_indiv_to_world(indiv)
+            data_dict = self._get_input_data(indiv, 0, x_coord, y_coord)
+            indiv._set_input_data(data_dict)
+
     def _new_indivs(self) -> list[Individual]:
         """ Creates individuals with potential mutations replacing the ones that died in past generation """
         indivs = []
@@ -111,12 +114,13 @@ class SimController:
             return new_x_int, new_y_int
         return None, None
 
-    def _update_input_data(self, individual: Individual, new_x_int: int | None = None, new_y_int: int | None = None) -> None:
-        data_dict = self._get_input_data(individual, new_x_int, new_y_int)
+    def _update_input_data(self, individual: Individual, generation_step: int, new_x_int: int | None = None, new_y_int: int | None = None) -> None:
+        data_dict = self._get_input_data(individual, generation_step, new_x_int, new_y_int)
         individual.update_data(data_dict)
 
-    def _get_input_data(self, individual: Individual, x_loc: int | None = None, 
-                        y_loc: int | None = None) -> dict[InputTypes, float]:
+    def _get_input_data(self, individual: Individual, generation_step: int, 
+                        x_loc: int | None = None, y_loc: int | None = None) -> dict[InputTypes, float]:
+        """ Gathers and returns sensory information for an individual """
         if x_loc is not None and y_loc is not None:
             x_coord_int = x_loc
             y_coord_int = y_loc
@@ -125,7 +129,7 @@ class SimController:
         data_dict = {}
         data_dict[InputTypes.X_POSITION] = x_coord_int / self.world.x_size
         data_dict[InputTypes.Y_POSITION] = y_coord_int / self.world.y_size
-        data_dict[InputTypes.AGE] = 0
+        data_dict[InputTypes.AGE] = generation_step
         data_dict[InputTypes.RANDOM]= random() 
         data_dict[InputTypes.X_DISTANCE] = round(x_coord_int / self.world.x_size)
         data_dict[InputTypes.Y_DISTANCE] = round(y_coord_int / self.world.y_size)
