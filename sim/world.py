@@ -27,19 +27,21 @@ class World:
         if indiv:
             raise Exception("Removing by indiv currently not supported")
 
-    def move_individual(self, individual: Individual, move_x: int, move_y: int):
-        """ Find an individual in the world and move them if the desired cell is available"""
+    def move_individual(self, individual: Individual, move_x: int, move_y: int) -> tuple[int | None, int | None]:
+        """ Find an individual in the world and moves them if the desired cell is available """
         start_x, start_y = self._find_individual(individual)
         end_x = start_x + move_x
         end_y = start_y + move_y
-        if self.open_cells[(end_x, end_y)]:
+        if (end_x, end_y) in self.open_cells and self.open_cells[(end_x, end_y)]:
             self.remove_individual((start_x, start_y))
             self.add_individual(individual, end_x, end_y)
+            return end_x, end_y
+        return None, None
 
     def clear_map(self) -> None:
         """ Removes all items from the map """
-        self.indiv_map = [[]]
-        self.open_cells = dict.fromkeys(self.open_cells, True)
+        self.indiv_map = [[0 for y in range(self.y_size)] for x in range(self.x_size)]
+        self.open_cells = self._initialize_open_cells()
 
     def cell_open(self, x_coord, y_coord) -> bool:
         """ Checks to see if a cell in the world is occupied """
@@ -50,9 +52,9 @@ class World:
         return choice(list([key for key, value in self.open_cells.items() if value]))
     
     def _find_individual(self, individual: Individual) -> tuple[int, int]:
-        """ Private method to find an individual's x and y coordinates """
+        """ Method to find an individual's x and y coordinates from it's neural network """
         x_coord, y_coord = individual.get_location()
-        return x_coord * self.x_size, y_coord * self.y_size
+        return int(x_coord * self.x_size), int(y_coord * self.y_size)
 
     def _initialize_open_cells(self) -> dict[tuple[int, int], bool]:
         """ 

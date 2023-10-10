@@ -27,3 +27,7 @@ class MoveDirections(Enum):
     SE = ( 1, -1)
     SW = (-1, -1)
     NW = ( 1, -1)
+
+class SurvivalConditions(Enum):
+    """All supported survial conditions for a generation """
+    RIGHT_SIDE = 0

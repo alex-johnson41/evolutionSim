@@ -1,9 +1,10 @@
 from sim.sim_controller import SimController
 import pytest
+from sim.types import SurvivalConditions
 
 
 def test_small_simulation():
-    controller = SimController(100, 1000, 4, 2, 50, 50)
-    assert controller.generation_steps == 1000
+    controller = SimController(100, 300, 4, 2, 50, 50, 
+                               SurvivalConditions.RIGHT_SIDE, 0.01)
     controller.setup_simulation()
-    controller.run_generation()
+    controller.run_simulation(10)

@@ -32,7 +32,7 @@ class Individual:
             synapse.send_data()
         return self.nnet.get_actions()
     
-    def get_location(self) -> tuple[int, int]:
+    def get_location(self) -> tuple[float, float]:
         """ Retrieves the individuals location from it's input nodes """
         try:
             for neuron in self.input_neurons_dict.values():
@@ -46,6 +46,7 @@ class Individual:
     
     def _create_nnet(self, genome_hex: str) -> None:
         """ Creates neural network from hexadecimal genome string """
+        self.genome = genome_hex
         self.nnet = self._decode_genome_hex(genome_hex)
 
     def _set_input_data(self, input_data: dict[InputTypes, float]) -> None:

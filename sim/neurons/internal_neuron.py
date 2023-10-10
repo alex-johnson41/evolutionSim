@@ -12,10 +12,10 @@ class InternalNeuron(Neuron):
 
     def get_data(self) -> float:
         """ Processes data from input/internal neurons, resets all data, and returns processed data """
-        data = self.data + self.self_input
+        data = sum(self.data) + self.self_input
         self.self_input = 0
         self.data = []
-        return tanh(sum(data))
+        return tanh(data)
     
     def add_data(self, data: float) -> None:
         """ Add new data value to the neurons total data """
