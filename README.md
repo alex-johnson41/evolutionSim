@@ -9,6 +9,7 @@ Indents imply inheritence
 - Neuron
     - Input Neuron
         - All subclasses contain float from 0 to 1 that corresponds to their function
+        - Shouldn't need different types of input neurons, all they do is store data that is fed to them
         - Types:
             - Age
             - Random Input
@@ -47,6 +48,7 @@ Indents imply inheritence
 - Sim Creator
 
 ### Notes:
+- TODO: Figure out bit manipulation in individual for decoding hex string
 - Internal neurons can feed into themselves, when they do, the value they use as 
 input is the value they generated during the previous step
 - Remove all connections to neurons that don't have a connection out

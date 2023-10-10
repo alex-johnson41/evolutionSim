@@ -1,0 +1,8 @@
+-e git+https://github.com/alex-johnson41/evolutionSim.git@780a2d5c3616caf82401dc221bd0af3655b7ad95#egg=EvolutionSim
+exceptiongroup==1.1.3
+iniconfig==2.0.0
+numpy==1.26.0
+packaging==23.2
+pluggy==1.3.0
+pytest==7.4.2
+tomli==2.0.1
