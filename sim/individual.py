@@ -1,7 +1,7 @@
 import re
 from random import choice
-from .genetics.neural_network import NeuralNetwork
-from .genetics.synapse import Synapse
+from .neural_network.neural_network import NeuralNetwork
+from .neural_network.synapse import Synapse
 from .neurons.input_neuron import InputNeuron
 from .neurons.output_neuron import OutputNeuron
 from .neurons.internal_neuron import InternalNeuron
