@@ -3,14 +3,16 @@ from .utilities.numpy_wrapper import sign, tanh
 from .world import World
 from .individual import Individual
 from random import choice, randrange, random, uniform
+from collections import Counter
 from .types import InputTypes, MoveDirections, OutputTypes, SurvivalConditions
+from .logger import Logger
 
 
 class SimController:
     """ API for controlling a simulation """
     def __init__(self, population: int, generation_steps: int, genome_length: int, 
                  internal_neuron_count: int, x_size: int, y_size: int, survival_condition: SurvivalConditions,
-                 mutation_chance: float) -> None:
+                 mutation_chance: float, log_name: str = "log_", log: bool = False) -> None:
         self.world = World(x_size, y_size)
         self.population = population
         self.generation_steps = generation_steps
@@ -19,6 +21,7 @@ class SimController:
         self.individuals = self._create_individuals(population)
         self.survival_condition = survival_condition
         self.mutation_chance = mutation_chance
+        self.logger = Logger(log, log_name)
         self.pause = False
 
     def setup_simulation(self):
@@ -30,21 +33,25 @@ class SimController:
 
     def run_simulation(self, generations: int) -> list[dict[str, int]]:
         """" Runs the simulation for x generations and returns basic data about each generation """
+        self.logger.setup(generations)
         for i in range(generations):
-            self.run_generation()
+            self.run_generation(i)
             self._setup_next_generation()
+        self.logger.log_simulation()
 
-    def run_generation(self) -> dict[str, int]:
+    def run_generation(self, generation_id: str) -> dict[str, int]:
         """ Simulates all steps of a single generation and returns a dictionary of basic data about the generation """
         for i in range(self.generation_steps):
-            self.step(i)
+            self.step(i, generation_id)
+        self.logger.log_generation(generation_id, len(self._find_survivors()))
 
-    def step(self, generation_step: int):
+    def step(self, generation_step: int, generation_id: int):
         """ Generate tne step for all individuals """
         for individual in self.individuals:
             actions_dict = individual.step()
             new_x_int, new_y_int = self._perform_actions(individual, actions_dict)
             self._update_input_data(individual, generation_step, new_x_int, new_y_int)
+        self.logger.log_step(generation_id, self.world)
 
     def analyze_generation(self) -> dict[str, Any]:
         """ Returns more in depth data on a generation """
@@ -87,7 +94,7 @@ class SimController:
                     x_coord, y_coord = self.world._find_individual(indiv)
                     if x_coord >= self.world.x_size / 2:
                         survivors.append(indiv)
-        print(len(survivors))
+        print(len(survivors)/len(self.individuals) * 100)
         return survivors
 
     def _perform_actions(self, individual: Individual, actions_dict: dict[OutputTypes, float]) -> tuple[int|None, int|None]:

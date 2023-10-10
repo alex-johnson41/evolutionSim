@@ -9,14 +9,16 @@ start = time()
 
 seed(1)
 controller = SimController(
-    population=100, 
-    generation_steps=300, 
-    genome_length=6, 
-    internal_neuron_count=2, 
-    x_size=100, 
-    y_size=100, 
+    population=50, 
+    generation_steps=50, 
+    genome_length=4, 
+    internal_neuron_count=1, 
+    x_size=20, 
+    y_size=20, 
     survival_condition= SurvivalConditions.RIGHT_SIDE, 
-    mutation_chance=0.01)
+    mutation_chance=0.01,
+    log=True,
+    log_name=round(start))
 controller.setup_simulation()
 controller.run_simulation(50)
 
