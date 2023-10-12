@@ -62,7 +62,9 @@ class SimController:
         self.pause = not self.pause
     
     def _setup_next_generation(self) -> None:
+        original = len(self.individuals)
         self.individuals = self._find_survivors()
+        print(len(self.individuals)/original * 100)
         new_indivs = self._new_indivs()
         self.individuals += new_indivs
         self.world.clear_map()
@@ -94,7 +96,11 @@ class SimController:
                     x_coord, y_coord = self.world._find_individual(indiv)
                     if x_coord >= self.world.x_size / 2:
                         survivors.append(indiv)
-        print(len(survivors)/len(self.individuals) * 100)
+            case SurvivalConditions.LEFT_SIDE:
+                for indiv in self.individuals:
+                    x_coord, y_coord = self.world._find_individual(indiv)
+                    if x_coord <= self.world.x_size / 2:
+                        survivors.append(indiv)
         return survivors
 
     def _perform_actions(self, individual: Individual, actions_dict: dict[OutputTypes, float]) -> tuple[int|None, int|None]:
@@ -113,8 +119,8 @@ class SimController:
             y_offset += y_dir * level
         probability_x_offset = abs(tanh(x_offset))
         probability_y_offset = abs(tanh(y_offset))
-        x_offset = int(uniform(0, 1) < probability_x_offset * sign(x_offset))
-        y_offset = int(uniform(0, 1) < probability_y_offset * sign(y_offset))
+        x_offset = int((uniform(0, 1) < probability_x_offset) * sign(x_offset))
+        y_offset = int((uniform(0, 1) < probability_y_offset) * sign(y_offset))
         if x_offset or y_offset:
             new_x_int, new_y_int = self.world.move_individual(individual, x_offset, y_offset)
             individual.forward = MoveDirections((x_offset, y_offset))
