@@ -8,9 +8,11 @@ class Logger:
     def __init__(self, log: bool, name: str) -> None:
         self.log = log
         self.name = name
-        mkdir(f"logs/{self.name}")
+        if log:
+            mkdir(f"logs/{self.name}")
 
     def setup(self, generations: int):
+        if not self.log: return
         for i in range(generations):
             mkdir(f"logs/{self.name}/{i}")
 
