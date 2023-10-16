@@ -3,6 +3,11 @@
 
 ## General Architecture:
 
+**Note:**
+Much of the following documentation is outdated/innacurate. 
+
+Go to [this](https://github.com/alex-johnson41/UnityEvolutionSim) repo to see the most up-to-date code and documentation.
+
 ### Classes/Objects:
 
 Indents imply inheritence
